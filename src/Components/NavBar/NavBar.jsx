@@ -5,7 +5,7 @@ const NavBar = ({ count }) => {
   return (
     <nav className="bg-violet-300 flex justify-center items-center py-6 text-white">
       <div className="flex justify-between w-3/5">
-        <h2 className="text-3xl font-bold">UseReducer</h2>
+        <h2 className="text-3xl font-bold">Cart</h2>
 
         <div className="relative">
           <FontAwesomeIcon icon={faCartPlus} className="text-4xl" />
