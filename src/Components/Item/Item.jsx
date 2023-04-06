@@ -1,7 +1,7 @@
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Item = ({ price, amount, title, img, onDelete, onAdd, itemCount }) => {
+const Item = ({ price, amount, title, img, onDelete, onAdd, onDecreased }) => {
   return (
     <div className="flex my-6">
       <div className="w-24">
@@ -27,9 +27,10 @@ const Item = ({ price, amount, title, img, onDelete, onAdd, itemCount }) => {
           onClick={onAdd}
           className="hover:cursor-pointer text-violet-500 hover:text-violet-700 text-xl  ease-in-out duration-300 transition-all"
         />
-        <p>{itemCount}</p>
+        <p>{amount}</p>
         <FontAwesomeIcon
           icon={faAngleDown}
+          onClick={onDecreased}
           className="hover:cursor-pointer text-violet-500 hover:text-violet-700 text-xl  ease-in-out duration-300 transition-all"
         />
       </div>

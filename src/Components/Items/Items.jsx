@@ -1,6 +1,6 @@
 import Item from "../Item/Item.jsx";
 
-const Items = ({ onDelete, currentItems, onAdd, itemCount }) => {
+const Items = ({ onDelete, currentItems, onAdd, onDecreased }) => {
   return (
     <div className="flex flex-col pb-12 pt-10 w-full">
       {currentItems.map((item) => (
@@ -13,7 +13,7 @@ const Items = ({ onDelete, currentItems, onAdd, itemCount }) => {
           title={item.title}
           onDelete={() => onDelete(item.id)}
           onAdd={() => onAdd(item.id)}
-          itemCount={itemCount}
+          onDecreased={() => onDecreased(item.id)}
         />
       ))}
     </div>

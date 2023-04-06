@@ -8,17 +8,15 @@ function App() {
 
   const [count, setCount] = useState(0);
 
-  const [eachItemCount, setCountEachITem] = useState(1);
+  const [isCleared, setClear] = useState(false);
 
-  const handleCartItemsNumber = useCallback(() => {
-    setCount(currentItems.length);
-  }, [currentItems.length]);
+  const [total, setTotal] = useState("0");
 
   const handleRemoveItem = useCallback(
     (todoId) => {
       const itemsClone = structuredClone(currentItems);
 
-      currentItems.forEach((item) => {
+      itemsClone.forEach((item) => {
         if (item.id === todoId) {
           itemsClone.splice(itemsClone.indexOf(item), 1);
         }
@@ -34,20 +32,58 @@ function App() {
 
       itemsClone.forEach((item) => {
         if (item.id === todoId) {
-          setCountEachITem((item.amount += 1));
+          item.amount = item.amount + 1;
+          item["total_amount"] = item.price * item.amount;
         }
       });
-      setCount();
+
+      setItems(itemsClone);
     },
     [currentItems]
   );
 
+  const handleItemsDecreased = useCallback(
+    (todoId) => {
+      const itemsClone = structuredClone(currentItems);
+
+      itemsClone.forEach((item) => {
+        if (item.id === todoId && item.amount > 0) {
+          item.amount = item.amount - 1;
+          item.total_amount = item.amount * item.price;
+        }
+      });
+
+      const result = itemsClone.filter((item) => item.amount > 0);
+
+      setItems(result);
+    },
+    [currentItems]
+  );
+
+  const handleCartItemsNumber = useCallback(() => {
+    const itemsClone = structuredClone(currentItems);
+
+    const quanity_result = itemsClone
+      .map((item) => item.amount)
+      .reduce((currV, preV) => currV + preV, 0);
+
+    const total_result = itemsClone
+      .map((item) => (item.total_amount ? item.total_amount : 0))
+      .reduce((currV, preV) => currV + preV, 0);
+
+    setTotal(parseFloat(total_result).toFixed(2));
+
+    setCount(quanity_result);
+  }, [currentItems]);
+
   useEffect(() => {
     handleCartItemsNumber();
-    handleItemsAdded();
-  }, [handleCartItemsNumber, handleItemsAdded]);
+  }, [handleCartItemsNumber]);
 
-  console.log(eachItemCount);
+  const handleOnClear = useCallback(() => {
+    setClear(true);
+    setCount(0);
+  }, []);
 
   return (
     <div className="flex h-screen flex-col">
@@ -58,7 +94,10 @@ function App() {
           onDelete={handleRemoveItem}
           currentItems={currentItems}
           onAdd={handleItemsAdded}
-          itemCount={eachItemCount}
+          onDecreased={handleItemsDecreased}
+          onClear={handleOnClear}
+          isCleared={isCleared}
+          total={total}
         />
       </header>
     </div>
