@@ -1,16 +1,10 @@
 import Body from "./Components/Body/Body";
 import NavBar from "./Components/NavBar/NavBar";
 import { items } from "./data";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 function App() {
   const [currentItems, setItems] = useState(items);
-
-  const [count, setCount] = useState(0);
-
-  const [isCleared, setClear] = useState(false);
-
-  const [total, setTotal] = useState("0");
 
   const handleRemoveItem = useCallback(
     (todoId) => {
@@ -60,30 +54,26 @@ function App() {
     [currentItems]
   );
 
-  const handleCartItemsNumber = useCallback(() => {
-    const itemsClone = structuredClone(currentItems);
-
-    const quanity_result = itemsClone
-      .map((item) => item.amount)
-      .reduce((currV, preV) => currV + preV, 0);
-
-    const total_result = itemsClone
-      .map((item) => (item.total_amount ? item.total_amount : 0))
-      .reduce((currV, preV) => currV + preV, 0);
-
-    setTotal(parseFloat(total_result).toFixed(2));
-
-    setCount(quanity_result);
-  }, [currentItems]);
-
-  useEffect(() => {
-    handleCartItemsNumber();
-  }, [handleCartItemsNumber]);
-
   const handleOnClear = useCallback(() => {
-    setClear(true);
-    setCount(0);
+    setItems([]);
   }, []);
+
+  let count = currentItems
+    .map((item) => item.amount)
+    .reduce((currV, preV) => currV + preV, 0);
+
+  let total = currentItems
+    .map((item) => {
+      if (item.amount === 1) {
+        item.total_amount = item.price;
+      } else {
+        item.total_amount = item.total_amount ? item.total_amount : 0;
+      }
+      return item.total_amount;
+    })
+    .reduce((currV, preV) => currV + preV, 0);
+
+  total = parseFloat(total).toFixed(2);
 
   return (
     <div className="flex h-screen flex-col">
@@ -96,7 +86,7 @@ function App() {
           onAdd={handleItemsAdded}
           onDecreased={handleItemsDecreased}
           onClear={handleOnClear}
-          isCleared={isCleared}
+          isCleared={currentItems.length === 0}
           total={total}
         />
       </header>
